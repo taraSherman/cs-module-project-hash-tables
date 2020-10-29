@@ -54,24 +54,37 @@ class HashTable:
                 items += 1
         return items / self.capacity
 
-
     def fnv1(self, key):
         """
         FNV-1 Hash, 64-bit
-
-        Implement this, and/or DJB2.
-        """
-
-        # Your code here
-
-
-    def djb2(self, key):
-        """
-        DJB2 hash, 32-bit
-
-        Implement this, and/or FNV-1.
+            hash := FNV_offset_basis
+        for each byte_of_data to be hashed do
+            hash := hash × FNV_prime
+            hash := hash XOR byte_of_data
+        return hash
+        
+        byte_of_data = an 8-bit unsigned integer
+        XOR = 8-bit operation that modifies only the lower 8-bits of the hash value
+        FNV_offset_basis = 14695981039346656037
+        FNV_prime = 1099511628211
         """
         # Your code here
+        FNV_offset_basis = 14695981039346656037
+        FNV_prime = 1099511628211
+        hash = FNV_offset_basis
+        for byte_of_data in key:
+            hash = hash * FNV_prime
+            hash = hash ^ byte_of_data
+
+        return hash
+
+    # def djb2(self, key):
+    #     """
+    #     DJB2 hash, 32-bit
+
+    #     Implement this, and/or FNV-1.
+    #     """
+    #     # Your code here
 
 
     def hash_index(self, key):
