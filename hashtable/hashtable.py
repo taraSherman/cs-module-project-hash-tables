@@ -23,7 +23,7 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity
-        self.list = [None] * capacity
+        self.my_list = [None] * capacity
 
 
     def get_num_slots(self):
@@ -37,7 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return len(self.list)
+        return len(self.my_list)
 
 
     def get_load_factor(self):
@@ -69,12 +69,13 @@ class HashTable:
         FNV_prime = 1099511628211
         """
         # Your code here
+        self.key = key
         FNV_offset_basis = 14695981039346656037
         FNV_prime = 1099511628211
         hash = FNV_offset_basis
         for byte_of_data in key:
             hash = hash * FNV_prime
-            hash = hash ^ byte_of_data
+            hash = hash ^ ord(byte_of_data)
 
         return hash
 
@@ -92,8 +93,8 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
+        # return self.djb2(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -104,7 +105,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        ## 1. Hash our string/key, get out a number
+        ## 2. Take this number and modulo it by the length of the array
+        ## 3. This new number can be used as an index, so put the value at that index in our array
+        idx = self.hash_index(key)
+        self.my_list[idx] = value
 
     def delete(self, key):
         """
@@ -115,7 +120,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        # Delete: find the value, then set to None
+        idx = self.hash_index(key)
+        if self.my_list[idx] is None:
+            print(f'{key} not found')
+        else:
+            self.my_list[idx] = None
 
     def get(self, key):
         """
@@ -126,6 +136,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        ## 1. Hash our string/key, string --> number
+        ## 2. Mod this number by length of array
+        ## 3. Use this modded number / index to get the value there
+        idx = self.hash_index(key)
+        return self.my_list[idx]
 
 
     def resize(self, new_capacity):
