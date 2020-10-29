@@ -47,6 +47,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # load factor = total number of items divided by number of buckets/cells/slots
+        items = 0
+        for item in self.list:
+            if item != None:
+                items += 1
+        return items / self.capacity
 
 
     def fnv1(self, key):
