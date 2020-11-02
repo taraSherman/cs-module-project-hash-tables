@@ -24,7 +24,7 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.my_list = [None] * capacity
-
+        self.items = 0
 
     def get_num_slots(self):
         """
@@ -37,7 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return len(self.my_list)
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -48,11 +48,7 @@ class HashTable:
         """
         # Your code here
         # load factor = total number of items divided by number of buckets/cells/slots
-        items = 0
-        for item in self.list:
-            if item != None:
-                items += 1
-        return items / self.capacity
+        return self.count / self.capacity
 
     def fnv1(self, key):
         """
@@ -109,7 +105,22 @@ class HashTable:
         ## 2. Take this number and modulo it by the length of the array
         ## 3. This new number can be used as an index, so put the value at that index in our array
         idx = self.hash_index(key)
-        self.my_list[idx] = value
+        # check for collision
+        if self.my_list[idx] is not None:
+            node = self.my_list[idx]
+            while node is not None:
+                # check for the target value
+                if node.key == key:
+                    node.value = value
+                    return
+                # move to next node
+                node = node.next
+            old_head = self.my_list[idx]
+            new_head = HashTableEntry(key, value)
+            new_head.next = old_head
+            self.my_list[idx] = new_head
+        else:
+            self.my_list[idx] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -120,12 +131,27 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        # Delete: find the value, then set to None
         idx = self.hash_index(key)
-        if self.my_list[idx] is None:
-            print(f'{key} not found')
-        else:
-            self.my_list[idx] = None
+        node = self.my_list[idx]
+        
+        # if head of list matches key, delete head
+        if node.key == key:
+            self.my_list[idx] = node.next
+            return node
+        
+        # if key found elsewhere in list
+        prev_node = node
+        node = node.next
+        while node is not None:
+            if node.key == key:
+                prev_node.next = node.next
+                return node
+            else:
+                prev_node = node
+                node = node.next
+        # if key not found
+        print(f'{key} not found')
+        return None
 
     def get(self, key):
         """
@@ -140,7 +166,12 @@ class HashTable:
         ## 2. Mod this number by length of array
         ## 3. Use this modded number / index to get the value there
         idx = self.hash_index(key)
-        return self.my_list[idx]
+        node = self.my_list[idx]
+        while node is not None:
+            if node.key == key:
+                return node.value
+            node = node.next
+        return None
 
 
     def resize(self, new_capacity):
@@ -188,3 +219,4 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+
