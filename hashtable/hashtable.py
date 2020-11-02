@@ -23,7 +23,7 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity
-        self.my_list = [None] * capacity
+        self.storage = [None] * capacity
         self.items = 0
 
     def get_num_slots(self):
@@ -48,7 +48,7 @@ class HashTable:
         """
         # Your code here
         # load factor = total number of items divided by number of buckets/cells/slots
-        return self.count / self.capacity
+        return self.items / self.capacity
 
     def fnv1(self, key):
         """
@@ -106,8 +106,8 @@ class HashTable:
         ## 3. This new number can be used as an index, so put the value at that index in our array
         idx = self.hash_index(key)
         # check for collision
-        if self.my_list[idx] is not None:
-            node = self.my_list[idx]
+        if self.storage[idx] is not None:
+            node = self.storage[idx]
             while node is not None:
                 # check for the target value
                 if node.key == key:
@@ -115,12 +115,12 @@ class HashTable:
                     return
                 # move to next node
                 node = node.next
-            old_head = self.my_list[idx]
+            old_head = self.storage[idx]
             new_head = HashTableEntry(key, value)
             new_head.next = old_head
-            self.my_list[idx] = new_head
+            self.storage[idx] = new_head
         else:
-            self.my_list[idx] = HashTableEntry(key, value)
+            self.storage[idx] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -132,11 +132,11 @@ class HashTable:
         """
         # Your code here
         idx = self.hash_index(key)
-        node = self.my_list[idx]
+        node = self.storage[idx]
         
         # if head of list matches key, delete head
         if node.key == key:
-            self.my_list[idx] = node.next
+            self.storage[idx] = node.next
             return node
         
         # if key found elsewhere in list
@@ -166,7 +166,7 @@ class HashTable:
         ## 2. Mod this number by length of array
         ## 3. Use this modded number / index to get the value there
         idx = self.hash_index(key)
-        node = self.my_list[idx]
+        node = self.storage[idx]
         while node is not None:
             if node.key == key:
                 return node.value
