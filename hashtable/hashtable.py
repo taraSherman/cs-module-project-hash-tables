@@ -37,7 +37,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        return self.capacity
+        return len(self.storage)
 
 
     def get_load_factor(self):
@@ -48,7 +48,15 @@ class HashTable:
         """
         # Your code here
         # load factor = total number of items divided by number of buckets/cells/slots
-        return self.items / self.capacity
+        count = 0
+        
+        for i in range(0, len(self.storage)):
+            current = self.storage[i].head
+            while current is not None:
+                count += 1
+                current = current.next
+        load_factor = count / len(self.storage)
+        return load_factor
 
     def fnv1(self, key):
         """
@@ -182,6 +190,14 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        old_storage = self.storage[:]
+        self.capacity = new_capacity
+        self.storage = [None] * new_capacity
+
+        for node in old_storage:
+            while node is not None:
+                self.put(node.key, node.value)
+                node = node.next
 
 
 
